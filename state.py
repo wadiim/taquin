@@ -74,6 +74,14 @@ class State:
         bl[row][col], bl[new_row][new_col] = bl[new_row][new_col], bl[row][col]
         return State(bl, self, direction)
 
+    def get_neighbours(self, order):
+        neighbours = []
+        for d in order:
+            neighbour = self.move(Direction(d))
+            if neighbour is not None:
+                neighbours.append(neighbour)
+        return neighbours
+
     def get_inversion_count(self):
         # Flatten the board for convenience
         flattened = []

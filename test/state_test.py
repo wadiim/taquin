@@ -318,6 +318,106 @@ class StateTest(unittest.TestCase):
         ])
         self.assertEqual(Direction.LEFT, state.move(Direction.LEFT).operator)
 
+    def test_get_neighbours_if_not_an_edge_cell_then_return_correct_number_of_states(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 0, 11],
+            [12, 13, 14, 15]
+        ])
+        self.assertEqual(4, len(state.get_neighbours("RDLU")))
+
+    def test_get_neighbours_if_not_an_edge_cell_then_returns_correct_states(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 0, 11],
+            [12, 13, 14, 15]
+        ])
+        neighbours = state.get_neighbours("RDLU")
+        for d in Direction:
+            self.assertIn(state.move(d), neighbours)
+
+    def test_get_neighbours_if_not_an_edge_cell_then_returns_states_in_correct_order(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 0, 11],
+            [12, 13, 14, 15]
+        ])
+        order = "RDLU"
+        neighbours = state.get_neighbours(order)
+        i = 0
+        for d in order:
+            self.assertEqual(state.move(Direction(d)), neighbours[i])
+            i += 1
+
+    def test_get_neighbours_if_an_edge_cell_then_returns_correct_number_of_states(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 0],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        self.assertEqual(3, len(state.get_neighbours("RDLU")))
+
+    def test_get_neighbours_if_an_edge_cell_then_returns_correct_states(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 0],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        neighbours = state.get_neighbours("RDLU")
+        for d in (Direction.UP, Direction.LEFT, Direction.DOWN):
+            self.assertIn(state.move(d), neighbours)
+
+    def test_get_neighbours_if_an_edge_cell_then_returns_states_in_correct_order(self):
+        state = State([
+            [1, 2, 3, 4],
+            [5, 6, 7, 0],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        neighbours = state.get_neighbours("RDLU")
+        i = 0
+        for d in "DLU":
+            self.assertEqual(state.move(Direction(d)), neighbours[i])
+            i += 1
+
+    def test_get_neighbours_if_a_corner_cell_then_returns_correct_number_of_states(self):
+        state = State([
+            [1, 2, 3, 0],
+            [5, 6, 7, 4],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        self.assertEqual(2, len(state.get_neighbours("RDLU")))
+
+    def test_get_neighbours_if_a_corner_cell_then_returns_correct_states(self):
+        state = State([
+            [1, 2, 3, 0],
+            [5, 6, 7, 4],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        neighbours = state.get_neighbours("RDLU")
+        for d in (Direction.LEFT, Direction.DOWN):
+            self.assertIn(state.move(d), neighbours)
+
+    def test_get_neighbours_if_a_corner_state_then_returns_states_in_correct_order(self):
+        state = State([
+            [1, 2, 3, 0],
+            [5, 6, 7, 4],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ])
+        neighbours = state.get_neighbours("RDLU")
+        i = 0
+        for d in "DL":
+            self.assertEqual(state.move(Direction(d)), neighbours[i])
+            i += 1
+
 
 if __name__ == '__main__':
     unittest.main()
