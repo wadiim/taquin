@@ -17,23 +17,23 @@ class State:
     }
 
     def __init__(self, board, parent=None, operator=None):
-        values = set()
+        width = len(board[0])
+        height = len(board)
+        seen_values = set()
+
+        # Check for duplicated values
         for row in board:
-            for val in row:
-                if val not in values:
-                    values.add(val)
-                elif val == 0:
-                    raise ValueError('Invalid board: Multiple blank fields')
-                else:
-                    raise ValueError(f'Invalid board: Value {val} occurs more than once')
-
-            if len(row) != len(board[0]):
+            if len(row) != width:
                 raise ValueError('Invalid board: Rows have different sizes')
+            for value in row:
+                if value in seen_values:
+                    raise ValueError(f'Invalid board: Value {value} occurs more than once')
+                seen_values.add(value)
 
-        # Look for missing values
-        for val in range(0, len(board) * len(board[0])):
-            if val not in values:
-                raise ValueError(f'Invalid board: Value {val} is missing')
+        # Check for missing values
+        values = set(range(width * height))
+        if seen_values != values:
+            raise ValueError(f'Invalid board: Values {values - seen_values} are missing')
 
         self.board = tuple(map(tuple, board))
         self.parent = parent
@@ -54,22 +54,25 @@ class State:
 
     def get_target_state(self):
         target = []
-        row_length = len(self.board[0])
+        width = len(self.board[0])
+        height = len(self.board)
 
-        for row in range(0, len(self.board)):
+        for row in range(0, height):
             target.append([])
-            for col in range(0, row_length):
-                target[row].append(row * row_length + (col + 1))
+            for col in range(0, width):
+                target[row].append(row * width + (col + 1))
 
-        target[len(target) - 1][row_length - 1] = 0
+        target[height - 1][width - 1] = 0
         return State(target)
 
     def move(self, direction: Direction):
         row, col = self.get_blank_position()
-        row_shift, col_shift = self.DIRECTION_TO_VECTOR_MAP[direction]
-        new_row, new_col = row + row_shift, col + col_shift
-        if new_row < 0 or new_row > len(self.board) - 1 or new_col < 0 or new_col > len(self.board[row]) - 1:
+        row_diff, col_diff = self.DIRECTION_TO_VECTOR_MAP[direction]
+        new_row, new_col = row + row_diff, col + col_diff
+
+        if new_row < 0 or new_col < 0 or new_row >= len(self.board) or new_col >= len(self.board[row]):
             return None
+
         bl = [list(row) for row in self.board]
         bl[row][col], bl[new_row][new_col] = bl[new_row][new_col], bl[row][col]
         return State(bl, self, direction)
@@ -84,10 +87,7 @@ class State:
 
     def get_inversion_count(self):
         # Flatten the board for convenience
-        flattened = []
-        for row in self.board:
-            for val in row:
-                flattened.append(val)
+        flattened = [item for row in self.board for item in row]
 
         inv_count = 0
         for i in range(len(flattened) - 1):

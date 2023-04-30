@@ -5,14 +5,10 @@ from state import State, Direction
 
 class StateTest(unittest.TestCase):
     def test_init_if_non_iterable_argument_passed_then_raises_type_error(self):
-        with self.assertRaises(TypeError) as c:
-            State(2)
-        self.assertEqual("'int' object is not iterable", str(c.exception))
+        self.assertRaises(TypeError, lambda: State(2))
 
     def test_init_if_iterable_argument_with_non_iterable_elements_passed_then_raises_type_error(self):
-        with self.assertRaises(TypeError) as c:
-            State([1, 2, 3, 0])
-        self.assertEqual("'int' object is not iterable", str(c.exception))
+        self.assertRaises(TypeError, lambda: State([1, 2, 3, 0]))
 
     def test_init_if_board_has_rows_of_different_lengths_then_raises_value_error(self):
         board = [
@@ -32,7 +28,7 @@ class StateTest(unittest.TestCase):
         ]
         with self.assertRaises(ValueError) as c:
             State(board)
-        self.assertEqual('Invalid board: Multiple blank fields', str(c.exception))
+        self.assertEqual('Invalid board: Value 0 occurs more than once', str(c.exception))
 
     def test_init_if_repeated_values_then_raises_value_error(self):
         board = [
@@ -52,7 +48,17 @@ class StateTest(unittest.TestCase):
         ]
         with self.assertRaises(ValueError) as c:
             State(board)
-        self.assertEqual('Invalid board: Value 2 is missing', str(c.exception))
+        self.assertEqual('Invalid board: Values {2} are missing', str(c.exception))
+
+    def test_init_if_multiple_numbers_are_missing_then_raises_value_error(self):
+        board = [
+            [1, 3, 5],
+            [6, 7, 9],
+            [10, 11, 0]
+        ]
+        with self.assertRaises(ValueError) as c:
+            State(board)
+        self.assertEqual(f'Invalid board: Values { {2, 4, 8} } are missing', str(c.exception))
 
     def test_init_if_called_explicitly_then_parent_is_none(self):
         state = State([
