@@ -38,6 +38,7 @@ class State:
         self.board = tuple(map(tuple, board))
         self.parent = parent
         self.operator = operator
+        self.blank_position = None
 
     def is_solvable(self):
         inv_count = self.get_inversion_count()
@@ -53,17 +54,23 @@ class State:
                 return inv_count % 2 != 0
 
     def get_target_state(self):
-        target = []
+        target_board = []
         width = len(self.board[0])
         height = len(self.board)
 
         for row in range(0, height):
-            target.append([])
+            target_board.append([])
             for col in range(0, width):
-                target[row].append(row * width + (col + 1))
+                target_board[row].append(row * width + (col + 1))
 
-        target[height - 1][width - 1] = 0
-        return State(target)
+        target_board[height - 1][width - 1] = 0
+
+        target = State.__new__(State)
+        target.parent = None
+        target.operator = None
+        target.blank_position = (height - 1, width - 1)
+        target.board = tuple(map(tuple, target_board))
+        return target
 
     def move(self, direction: Direction):
         row, col = self.get_blank_position()
@@ -75,7 +82,13 @@ class State:
 
         bl = [list(row) for row in self.board]
         bl[row][col], bl[new_row][new_col] = bl[new_row][new_col], bl[row][col]
-        return State(bl, self, direction)
+
+        new_state = State.__new__(State)
+        new_state.parent = self
+        new_state.operator = direction
+        new_state.blank_position = (new_row, new_col)
+        new_state.board = tuple(map(tuple, bl))
+        return new_state
 
     def get_neighbours(self, order):
         neighbours = []
@@ -98,6 +111,9 @@ class State:
         return inv_count
 
     def get_blank_position(self):
+        if self.blank_position is not None:
+            return self.blank_position
+
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 if self.board[i][j] == 0:
