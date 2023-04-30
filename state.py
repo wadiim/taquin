@@ -113,3 +113,7 @@ class State:
 
     def __hash__(self):
         return hash(self.board)
+
+    def __repr__(self):
+        return f'State(parent={hex(id(self.parent)) if self.parent is not None else None}, '\
+               f'operator={self.operator}, board={self.board})'
