@@ -121,3 +121,6 @@ class State:
     def __repr__(self):
         return f'State(parent={hex(id(self.parent)) if self.parent is not None else None}, '\
                f'operator={self.operator}, board={self.board})'
+
+    def __lt__(self, other):
+        return False
