@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from solver import Solver
 from state import State
@@ -6,26 +6,28 @@ from state import State
 
 class DFSSolver(Solver):
     @staticmethod
-    def solve(state: State, order: str, max_depth=32) -> Optional[State]:
+    def solve(state: State, order: str, depth_limit=32) -> Tuple[Optional[State], int, int, int]:
         Solver.solve(state, order)
 
         goal = state.get_target_state()
-        if state == goal:
-            return state
-
         stack = [(state, 0)]
-        visited = set()
+        explored = set()
+        num_of_visited = 1
+        max_depth = 0
 
         while len(stack) > 0:
             node, depth = stack.pop()
-            if node not in visited:
-                visited.add(node)
+            if node not in explored:
+                explored.add(node)
                 if node == goal:
-                    return node
-                if depth >= max_depth:
+                    return node, num_of_visited, len(explored), max_depth
+                if depth >= depth_limit:
                     continue
                 for neighbour in reversed(node.get_neighbours(order)):
-                    if neighbour not in visited:
+                    if neighbour not in explored:
                         stack.append((neighbour, depth + 1))
+                        num_of_visited += 1
+                        if depth + 1 > max_depth:
+                            max_depth = depth + 1
 
-        return None
+        return None, num_of_visited, len(explored), max_depth

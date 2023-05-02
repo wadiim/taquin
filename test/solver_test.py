@@ -22,7 +22,7 @@ class SolverTest:
         self.solver = Solver()
 
     def test_solve_if_already_solved_then_returns_the_input_state(self):
-        self.assertEqual(self.solved, self.solver.solve(self.solved, "RDLU"))
+        self.assertEqual(self.solved, self.solver.solve(self.solved, "RDLU")[0])
 
     def test_solve_if_is_not_solvable_then_raises_an_exception(self):
         state = State([
@@ -46,28 +46,28 @@ class SolverTest:
 
     def test_solve_if_one_step_from_target_state_then_returns_solved_state(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state.get_target_state(), self.solver.solve(state, "RDLU"))
+        self.assertEqual(state.get_target_state(), self.solver.solve(state, "RDLU")[0])
 
     def test_solve_if_one_step_from_target_state_then_returns_state_with_correct_parent(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state, self.solver.solve(state, "RDLU").parent)
+        self.assertEqual(state, self.solver.solve(state, "RDLU")[0].parent)
 
     def test_solve_if_one_step_from_target_state_then_returns_state_with_correct_operator(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(Direction.DOWN, self.solver.solve(state, "RDLU").operator)
+        self.assertEqual(Direction.DOWN, self.solver.solve(state, "RDLU")[0].operator)
 
     def test_solve_if_unsolved_then_returns_solved_state(self):
-        self.assertEqual(self.unsolved.get_target_state(), self.solver.solve(self.unsolved, "RDLU"))
+        self.assertEqual(self.unsolved.get_target_state(), self.solver.solve(self.unsolved, "RDLU")[0])
 
     def test_solve_if_unsolved_then_the_oldest_ancestor_of_the_result_state_is_the_input_state(self):
-        state = self.solver.solve(self.unsolved, "RDLU").parent
+        state = self.solver.solve(self.unsolved, "RDLU")[0].parent
         while state.parent is not None:
             state = state.parent
         self.assertEqual(self.unsolved, state)
 
     def test_solve_if_unsolved_then_the_operator_chain_is_correct(self):
         operators = []
-        state = self.solver.solve(self.unsolved, "RDLU")
+        state = self.solver.solve(self.unsolved, "RDLU")[0]
         while state is not None and state.operator is not None:
             operators.append(state.operator)
             state = state.parent

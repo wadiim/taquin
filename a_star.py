@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 import heapq
 
 from state import State
@@ -32,23 +32,28 @@ def hamming_distance(state: State) -> int:
 
 class AStarSolver:
     @staticmethod
-    def solve(state, heuristic=manhattan_distance) -> Optional[State]:
+    def solve(state, heuristic=manhattan_distance) -> Tuple[Optional[State], int, int, int]:
         if not state.is_solvable():
             raise Exception("Not solvable")
 
         goal = state.get_target_state()
         priority = heuristic(state)
         frontier = [(priority, state, 0)]
-        visited = set()
+        explored = set()
+        num_of_visited = 1
+        max_depth = 0
 
         while len(frontier) > 0:
             _, node, depth = heapq.heappop(frontier)
+            explored.add(node)
             if node == goal:
-                return node
-            visited.add(node)
+                return node, num_of_visited, len(explored), max_depth
             for neighbour in node.get_neighbours("URDL"):
-                if neighbour not in visited:
+                if neighbour not in explored:
                     priority = (depth + 1) + heuristic(neighbour)
                     heapq.heappush(frontier, (priority, neighbour, depth + 1))
+                    num_of_visited += 1
+                    if depth + 1 > max_depth:
+                        max_depth = depth + 1
 
-        return None
+        return None, num_of_visited, len(explored), max_depth

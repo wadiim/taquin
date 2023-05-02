@@ -38,7 +38,7 @@ class AStarTest(unittest.TestCase):
         self.assertEqual(3, hamming_distance(state))
 
     def test_solve_if_already_solved_then_returns_the_input_state(self):
-        self.assertEqual(self.solved, AStarSolver.solve(self.solved))
+        self.assertEqual(self.solved, AStarSolver.solve(self.solved)[0])
 
     def test_solve_if_is_not_solvable_then_raises_an_exception(self):
         state = State([
@@ -52,28 +52,28 @@ class AStarTest(unittest.TestCase):
 
     def test_solve_if_one_step_from_target_state_then_returns_solved_state(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state.get_target_state(), AStarSolver.solve(state))
+        self.assertEqual(state.get_target_state(), AStarSolver.solve(state)[0])
 
     def test_solve_if_one_step_from_target_state_then_returns_state_with_correct_parent(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state, AStarSolver.solve(state).parent)
+        self.assertEqual(state, AStarSolver.solve(state)[0].parent)
 
     def test_solve_if_one_step_from_target_state_then_returns_state_with_correct_operator(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(Direction.DOWN, AStarSolver.solve(state).operator)
+        self.assertEqual(Direction.DOWN, AStarSolver.solve(state)[0].operator)
 
     def test_solve_if_unsolved_then_returns_solved_state(self):
-        self.assertEqual(self.unsolved.get_target_state(), AStarSolver.solve(self.unsolved))
+        self.assertEqual(self.unsolved.get_target_state(), AStarSolver.solve(self.unsolved)[0])
 
     def test_solve_if_unsolved_then_the_oldest_ancestor_of_the_result_state_is_the_input_state(self):
-        state = AStarSolver.solve(self.unsolved).parent
+        state = AStarSolver.solve(self.unsolved)[0].parent
         while state.parent is not None:
             state = state.parent
         self.assertEqual(self.unsolved, state)
 
     def test_solve_if_unsolved_then_the_operator_chain_is_correct(self):
         operators = []
-        state = AStarSolver.solve(self.unsolved)
+        state = AStarSolver.solve(self.unsolved)[0]
         while state is not None and state.operator is not None:
             operators.append(state.operator)
             state = state.parent
@@ -86,24 +86,24 @@ class AStarTest(unittest.TestCase):
 
     def test_solve_if_hamming_heuristic_then_returns_solved_state(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state.get_target_state(), AStarSolver.solve(state, hamming_distance))
+        self.assertEqual(state.get_target_state(), AStarSolver.solve(state, hamming_distance)[0])
 
     def test_solve_if_manhattan_heuristic_then_returns_solved_state(self):
         state = self.solved.move(Direction.UP)
-        self.assertEqual(state.get_target_state(), AStarSolver.solve(state, manhattan_distance))
+        self.assertEqual(state.get_target_state(), AStarSolver.solve(state, manhattan_distance)[0])
 
     def test_solve_if_15_puzzle_then_returns_solved_state(self):
-        self.assertEqual(self.puzzle15.get_target_state(), AStarSolver.solve(self.puzzle15))
+        self.assertEqual(self.puzzle15.get_target_state(), AStarSolver.solve(self.puzzle15)[0])
 
     def test_solve_if_15_puzzle_then_the_oldest_ancestor_of_the_result_state_is_the_input_state(self):
-        state = AStarSolver.solve(self.puzzle15).parent
+        state = AStarSolver.solve(self.puzzle15)[0].parent
         while state.parent is not None:
             state = state.parent
         self.assertEqual(self.puzzle15, state)
 
     def test_solve_if_15_puzzle_then_the_operator_chain_is_correct(self):
         operators = []
-        state = AStarSolver.solve(self.puzzle15)
+        state = AStarSolver.solve(self.puzzle15)[0]
         while state is not None and state.operator is not None:
             operators.append(state.operator)
             state = state.parent
