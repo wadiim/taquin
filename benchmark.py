@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     print('--- State (1 000 000 runs) ---')
     for s in state_snippets:
-        print(f'{s}: {round(min(bench(s, setup=state_setup)), 2)}')
+        print(f'{s}: {round(min(bench(s, setup=state_setup)), 2)} s')
 
     dfs_setup = 'from state import State, Direction; from dfs import DFSSolver;' \
                 'state = State([[1, 3, 0, 4], [5, 2, 7, 8], [9, 6, 11, 12], [13, 10, 14, 15]])'
@@ -39,9 +39,9 @@ if __name__ == '__main__':
         'DFSSolver.solve(state, "ULRD", 20)'
     ]
 
-    print('\n--- DFS (10 runs) ---')
+    print('\n--- DFS (1 000 runs) ---')
     for s in dfs_snippets:
-        print(f'{s}: {round(min(bench(s, number=10, setup=dfs_setup)), 2)}')
+        print(f'{s}: {round(min(bench(s, number=1000, setup=dfs_setup)), 2)} s')
 
     bfs_setup = 'from state import State, Direction; from bfs import BFSSolver;' \
                 'state = State([[1, 3, 0, 4], [5, 2, 7, 8], [9, 6, 11, 12], [13, 10, 14, 15]])'
@@ -56,9 +56,9 @@ if __name__ == '__main__':
         'BFSSolver.solve(state, "ULRD")'
     ]
 
-    print('\n--- BFS (10 runs) ---')
+    print('\n--- BFS (1 000 runs) ---')
     for s in bfs_snippets:
-        print(f'{s}: {round(min(bench(s, number=10, setup=bfs_setup)), 2)}')
+        print(f'{s}: {round(min(bench(s, number=1000, setup=bfs_setup)), 2)} s')
 
     a_star_setup = 'from state import State, Direction;' \
                    'from a_star import AStarSolver, hamming_distance, manhattan_distance;' \
@@ -68,6 +68,6 @@ if __name__ == '__main__':
         'AStarSolver.solve(state, manhattan_distance)'
     ]
 
-    print('\n--- A* (10 000 runs) ---')
+    print('\n--- A* (1 000 runs) ---')
     for s in a_star_snippets:
-        print(f'{s}: {round(min(bench(s, number=10000, setup=a_star_setup)), 2)}')
+        print(f'{s}: {round(min(bench(s, number=1000, setup=a_star_setup)), 2)} s')
