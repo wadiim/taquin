@@ -19,9 +19,9 @@ class BFSSolver(Solver):
 
         while len(frontier) > 0:
             node, depth = frontier.popleft()
-            explored.add(node)
             if node == goal:
                 return node, num_of_visited, len(explored), max_depth
+            explored.add(node)
             for neighbour in node.get_neighbours(order):
                 if neighbour not in explored:
                     frontier.append((neighbour, depth + 1))
