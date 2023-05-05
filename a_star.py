@@ -45,9 +45,9 @@ class AStarSolver:
 
         while len(frontier) > 0:
             _, node, depth = heapq.heappop(frontier)
-            explored.add(node)
             if node == goal:
                 return node, num_of_visited, len(explored), max_depth
+            explored.add(node)
             for neighbour in node.get_neighbours("URDL"):
                 if neighbour not in explored:
                     priority = (depth + 1) + heuristic(neighbour)
