@@ -11,9 +11,9 @@ where:
 
 * `<strategy>` — The algorithm that will be used to solve the puzzle. Can be one of the following: `bfs` (Breadth-first search), `dfs` (Depth-first search), `astr` (A*);
 * `<parameter>` — The algorithm's parameter. In case of BFS and DFS, it is the search order specified by a string that is permutation of the following four upper case letters: L (left), R (right), U (up), and D (down). In case of A*, it is a heuristic that can be one of the following: `hamm` (Hamming distance), or `manh` (Manhattan distance);
-* `<puzzle-file>` — The path to the file containing the puzzle to solve. The format of this file is specified later in this document (see section [Puzzle file](###-Puzzle-file));
-* `<solution-file>` — The path to the file that the solution will be written to. The format of this file is specified later in this document (see section [Solution file](###-Solution-file));
-* `<stats-file>` — The path to the file that the additional information about the calculation process will be written to. The format of this file is specified later in this document (see section [Stats file](###-Stats-file));
+* `<puzzle-file>` — The path to the file containing the puzzle to solve. The format of this file is specified later in this document (see section [Puzzle file](#puzzle-file));
+* `<solution-file>` — The path to the file that the solution will be written to. The format of this file is specified later in this document (see section [Solution file](#solution-file));
+* `<stats-file>` — The path to the file that the additional information about the calculation process will be written to. The format of this file is specified later in this document (see section [Stats file](#stats-file));
 
 ### Puzzle file
 
